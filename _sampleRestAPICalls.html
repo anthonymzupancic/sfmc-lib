@@ -1,18 +1,21 @@
 <script runat="server">
   Platform.Load("core", "1.1.1");
+
   var _api = Platform.Function.ContentBlockByID('####')
   var api = _api();
 
   var apiConfig = {
     authBase: "https://{{ SUBDOMAIN }}.auth.marketingcloudapis.com/",
-    restBase: "https://{{ SUBDOMAIN }}.rest.marketingcloudapis.com/",
     mid: "{{ MID }}",
     clientID: "{{ CLIENT_ID }}",
     clientSecret: "{{ CLIENT_SECRET }}"
   }
-
-  // get/add accessToken to apiConfig object
-  apiConfig.accessToken = api.auth(apiConfig)
+  
+  // add accessToken and restBase to apiConfig object
+  var authObject = api.auth(apiConfig);
+  apiConfig.accessToken = authObject.accessToken;
+  apiConfig.restBase = authObject.restBase;
+  
 
 
   /**
