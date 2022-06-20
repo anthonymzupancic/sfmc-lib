@@ -1,0 +1,80 @@
+<script runat="server">
+  Platform.Load("core", "1.1.1");
+  var _api = Platform.Function.ContentBlockByID('####')
+  var api = _api();
+
+  var apiConfig = {
+    authBase: "https://{{ SUBDOMAIN }}.auth.marketingcloudapis.com/",
+    restBase: "https://{{ SUBDOMAIN }}.rest.marketingcloudapis.com/",
+    mid: "{{ MID }}",
+    clientID: "{{ CLIENT_ID }}",
+    clientSecret: "{{ CLIENT_SECRET }}"
+  }
+
+  // get/add accessToken to apiConfig object
+  apiConfig.accessToken = api.auth(apiConfig)
+
+
+  /**
+  Start Simple GET Request
+  */
+  var getContentBuilderAssetConfig = {
+    url: "asset/v1/content/assets/",
+    method: "GET"
+  }
+
+  var contentBuilderAssets = api.scriptUtil(getContentBuilderAssetConfig, apiConfig)
+  Write(Stringify(contentBuilderAssets))
+  /**
+  End Simple GET Request
+  */
+
+
+  /**
+  Start Simple Post Request
+  */
+  var contentBuilderAssetsQueryConfig = {
+    url: "asset/v1/content/assets/query",
+    method: "POST",
+    payload: {
+      "page": {
+        "page": 1,
+        "pageSize": 50
+      },
+      "query": {
+        "leftOperand": {
+          "property": "createdDate",
+          "simpleOperator": "greaterThan",
+          "value": "2019-07-18T13:35:27.327-06:00"
+        },
+        "logicalOperator": "AND",
+        "rightOperand": {
+          "property": "assetType.name",
+          "simpleOperator": "equal",
+          "value": "png"
+        }
+      },
+      "sort": [
+        {
+          "property": "id",
+          "direction": "ASC"
+        }
+      ],
+      "fields": [
+        "enterpriseId",
+        "memberId",
+        "thumbnail",
+        "category",
+        "content",
+        "data"
+      ]
+    }
+  }
+
+  var contentBuilderAssetsQuery = api.scriptUtil(contentBuilderAssetsQueryConfig, apiConfig)
+  Write(Stringify(contentBuilderAssetsQuery))
+  /**
+  End Simple GET Request
+  */
+
+</script>
